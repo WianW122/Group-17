@@ -1,3 +1,27 @@
+--Donation Management System - SQlite database schema
+-- Database: donation_management.db
+
+--Enable foreign key constraints
+PRAGMA foreign_keys = ON;
+
+--Drop existing tables if they exist
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS donor_store_profiles;
+DROP TABLE IF EXISTS npo_profiles;
+DROP TABLE IF EXISTS donation_records;
+DROP TABLE IF EXISTS donation_item_details;
+DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS pickup_scheduling;
+DROP TABLE IF EXISTS collected_items;
+DROP TABLE IF EXISTS distribution_centers;
+DROP TABLE IF EXISTS sorting_records;
+DROP TABLE IF EXISTS delivery_routes;
+DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS distributed_items;
+DROP TABLE IF EXISTS delivery_confirmations;
+DROP TABLE IF EXISTS feedback_reviews;
+DROP TABLE IF EXISTS admin_logs;
+
 --- SQL script to create a table for storing user information
 CREATE TABLE users (
   user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -189,6 +213,96 @@ CREATE TABLE admin_logs (
   FOREIGN KEY (admin_id) REFERENCES users(user_id)
 );
 
+-- Seed users
+INSERT INTO users (user_id, name, email, password_hash, role) VALUES
+(1, 'Admin User', 'admin@example.com', 'admin123hash', 'donor'),
+(2, 'Alice Donor', 'alice@example.com', 'alice123hash', 'donor'),
+(3, 'Bob Donor', 'bob@example.com', 'bob123hash', 'donor'),
+(4, 'Hope Foundation', 'hope@example.com', 'hope123hash', 'npo'),
+(5, 'Care Connect', 'care@example.com', 'care123hash', 'npo');
+
+-- Donor profiles
+INSERT INTO donor_store_profiles (donor_store_id, first_name, last_name, email, phone_number, address, city, state, zip_code, country, date_of_birth)
+VALUES
+(2, 'Alice', 'Smith', 'alice@example.com', '0123456789', '123 Elm St', 'Pretoria', 'Gauteng', '0001', 'South Africa', '1985-06-15'),
+(3, 'Bob', 'Moyo', 'bob@example.com', '0987654321', '456 Oak St', 'Pretoria', 'Gauteng', '0002', 'South Africa', '1990-09-20');
+
+-- NPO profiles
+INSERT INTO npo_profiles (npo_id, npo_name, contact_person, email, phone_number, address, city, state, zip_code, country)
+VALUES
+(4, 'Hope Foundation', 'Lindiwe Khumalo', 'hope@example.com', '0112233445', '789 Charity Rd', 'Pretoria', 'Gauteng', '0003', 'South Africa'),
+(5, 'Care Connect', 'Thabo Ncube', 'care@example.com', '0119988776', '321 Help Ave', 'Pretoria', 'Gauteng', '0004', 'South Africa');
+
+-- Donations
+INSERT INTO donation_records (donation_id, donor_store_id, donation_amount, donation_type, notes)
+VALUES
+(1, 2, 500.00, 'monetary', 'Monthly donation'),
+(2, 3, 0.00, 'in-kind', 'Winter supplies'),
+(3, 2, 250.00, 'monetary', 'Emergency relief');
+
+-- Donation items
+INSERT INTO donation_item_details (item_id, donation_id, item_name, item_description, item_quantity, item_value)
+VALUES
+(1, 2, 'Blanket', 'Warm fleece blanket', 10, 50.00),
+(2, 2, 'Jacket', 'Winter jacket, assorted sizes', 5, 75.00);
+
+-- Pickup scheduling
+INSERT INTO pickup_scheduling (pickup_id, donor_store_id, scheduled_date, pickup_address, contact_person, contact_phone)
+VALUES
+(1, 3, '2025-10-28 10:00:00', '456 Oak St, Pretoria', 'Bob Moyo', '0987654321');
+
+-- Collected items
+INSERT INTO collected_items (collected_item_id, pickup_id, item_name, item_quantity, item_condition)
+VALUES
+(1, 1, 'Blanket', 10, 'Good'),
+(2, 1, 'Jacket', 5, 'Excellent');
+
+-- Distribution center
+INSERT INTO distribution_centers (center_id, center_name, address, city, state, zip_code, country, contact_person, contact_phone)
+VALUES
+(1, 'Pretoria Distribution Hub', '1 Hub Way', 'Pretoria', 'Gauteng', '0010', 'South Africa', 'Sibongile Dlamini', '0113344556');
+
+-- Sorting records
+INSERT INTO sorting_records (sorting_id, collected_item_id, center_id, sorted_category, sorted_quantity)
+VALUES
+(1, 1, 1, 'Blankets', 10),
+(2, 2, 1, 'Clothing', 5);
+
+-- Inventory
+INSERT INTO inventory (inventory_id, center_id, item_name, quantity)
+VALUES
+(1, 1, 'Blanket', 10),
+(2, 1, 'Jacket', 5);
+
+-- Distributed items
+INSERT INTO distributed_items (distribution_id, center_id, item_name, item_quantity)
+VALUES
+(1, 1, 'Blanket', 5),
+(2, 1, 'Jacket', 2);
+
+-- Delivery confirmations
+INSERT INTO delivery_confirmations (confirmation_id, distribution_id, received_by, notes)
+VALUES
+(1, 1, 'Hope Foundation', 'Received in good condition'),
+(2, 2, 'Care Connect', 'Delivered successfully');
+
+-- Feedback reviews
+INSERT INTO feedback_reviews (review_id, donor_store_id, npo_id, rating, comments)
+VALUES
+(1, 2, 4, 5, 'Great communication and impact'),
+(2, 3, 5, 4, 'Smooth pickup and delivery');
+
+-- Notifications
+INSERT INTO notifications (notification_id, sender_role, recipient_role, message, related_item_id, notification_type)
+VALUES
+(1, 'system', 'npo', 'New donation ready for pickup', 1, 'donation_ready'),
+(2, 'admin', 'npo', 'Stock available at distribution center', 2, 'stock_available');
+
+-- Admin logs
+INSERT INTO admin_logs (log_id, admin_id, action_type, target_table, target_id, notes)
+VALUES
+(1, 1, 'INSERT', 'donation_records', 3, 'Emergency donation logged'),
+(2, 1, 'UPDATE', 'inventory', 1, 'Inventory adjusted after sorting');
 
 
 
