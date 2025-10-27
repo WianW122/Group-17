@@ -23,11 +23,20 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
    ```
 ### Clone the Repository
 
-Open Visual Studio Code and:
+Open Visual Studio Code
+- Open the Command Palette using:
+  ```bash
+  (Ctrl + Shift + P)
+  ```
 
-- Open the Command Palette (`Ctrl + Shift + P`)
-- Select `Git: Clone`
-- Paste the repository URL: 
+- Select:
+  ```bash
+  Git: Clone
+  ```
+- Paste the repository URL:
+  ```bash
+   https://github.com/WianW122/Group-17
+  ```
    
 ## Database Schema
 
