@@ -37,6 +37,37 @@ MIT
 15. delivery_confirmation: Confirming completed delivery.
 16. notifications: Client communication.
 
+## Sample Data
+The database includes sample data for testing:
+
+1. Five different users with unique:
+    user_id, name, email, password, and role.
+2. Two NPO profiles with details such as:
+    npo_id, npo_name, contact_person, email, phone_number, address, city, state, zip_code, and country.
+3. Three donation records containing:
+    donation_id, donor_store_id, donation_amount, donation_type, and notes.
+4. Two donation item details specifying:
+    item_id, donation_id, item_name, item_description, item_quantity, and item_value.
+5. One pickup scheduling record with:
+    pickup_id, donor_store_id, scheduled_date, pickup_address, contact_person, and contact_phone.
+6. Two collected items including:
+    collected_item_id, pickup_id, item_name, item_quantity, and item_condition.
+7. One distribution center defined by:
+    center_id, center_name, address, city, state, zip_code, country, contact_person, and contact_phone.
+8. Two sorting records showing:
+    sorting_id, collected_item_id, center_id, sorted_category, and sorted_quantity.
+9. Two inventory entries with:
+    inventory_id, center_id, item_name, and quantity.
+10. Two distributed items tracking:
+    distribution_id, center_id, item_name, and item_quantity.
+11. Two delivery confirmations including:
+    confirmation_id, distribution_id, received_by, and notes.
+12. Two feedback reviews containing:
+    review_id, donor_store_id, npo_id, rating, and comments.
+13. Two notifications defined by:
+    notification_id, sender_role, recipient_role, message, related_item_id, and notification_type.
+14. Two admin logs with:
+    log_id, admin_id, action_type, target_table, target_id, and notes.
 
 ## File Structure
 
