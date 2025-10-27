@@ -14,15 +14,28 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 3. Start the server with `npm start`
 
 ## License
+MIT
 
 ## ERD diagram
 ![ERD diagram](BFB_Project/Images/ERD.jpg)
 
-
-
-
-
-MIT
+## Tables
+1. users: Client information when logging on.
+2. admin_logs: Administrator information.
+3. npo_profiles: Information regarding NPO's.
+4. feedback_reviews: Client ratings and feedback.
+5. donor_store_profiles: Information regarding donors.
+6. donation_item_detial: Information regarding donated items.
+7. donation_records: Previouse donations made.
+8. pickup_scheduling: Logistics information regarding pickup.
+9. collected_items: Items collected from stores.
+10. inventory: Items stored in inventory.
+11. distribution_centres: Information regarding distribution centres.
+12. sorting_records: Category item is sorted in. 
+13. delivery_routes: Information regarding transport routes.
+14. distributed_items: Information regarding delivered items. 
+15. delivery_confirmation: Confirming completed delivery.
+16. notifications: Client communication.
 
 
 ## File Structure
@@ -49,4 +62,13 @@ MIT
 - **Bootstrap Icons**: Icon set
 - **SQLite**: Database for data persistence
 
+## Browser Compatibility
+
+The application works with all modern browsers that support HTML5 and CSS3, including:
+
+Chrome 90+
+Firefox 88+
+Safari 14+
+Edge 90+
+Note: This is a static HTML application. For production use, you would need to add backend functionality for database connectivity and form processing.
 
