@@ -14,6 +14,14 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 3. Start the server with `npm start`
 
 ## License
+
+## ERD diagram
+![Screenshot](images/ERD.png)
+
+
+
+
+
 MIT
 
 
@@ -40,3 +48,5 @@ MIT
 - **Bootstrap 5.3.8**: UI framework and styling
 - **Bootstrap Icons**: Icon set
 - **SQLite**: Database for data persistence
+
+
