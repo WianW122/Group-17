@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <i class="bi bi-box-seam me-2" aria-hidden="true"></i>Inventory Manager
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="index.html" aria-current="page">
+                                <i class="bi bi-house me-1" aria-hidden="true"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('add_product')}}">
+                                <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('view_inventory')}}">
+                                <i class="bi bi-list-ul me-1" aria-hidden="true"></i>View Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="update-stock.html">
+                                <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Update Stock
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('login')}}">
+                                <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('register')}}">
+                                <i class="bi bi-person-plus me-1" aria-hidden="true"></i>Register
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mt-4" role="main">
+        <header class="mb-4">
+            <h1 class="h2">
+                <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>Dashboard
+            </h1>
+        </header>
+        <section class="mb-4">
+            <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{products_count}}</h4>
+                                <p class="card-text">Total Products</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-box-seam fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{items_count}}</h4>
+                                <p class="card-text">Total Items</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-stack fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">3</h4>
+                                <p class="card-text">Low Stock</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-exclamation-triangle fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">R{{total_value}}</h4>
+                                <p class="card-text">Total Value</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-currency-dollar fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <section class="mb-4" aria-labelledby="actions-heading">
+            <h2 id="actions-heading" class="h3 mb-3">Quick Actions</h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-plus-circle text-primary fs-1 mb-3" aria-hidden="true"></i>
+                            <h3 class="card-title h5">Add New Product</h3>
+                            <p class="card-text">Add a new item to your inventory with name, quantity, and price.</p>
+                            <a href="add-product.html" class="btn btn-primary">Add Product</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-list-ul text-success fs-1 mb-3" aria-hidden="true"></i>
+                            <h3 class="card-title h5">View Inventory</h3>
+                            <p class="card-text">Browse and search through all your inventory items.</p>
+                            <a href="view-inventory.html" class="btn btn-success">View Inventory</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-pencil-square text-warning fs-1 mb-3" aria-hidden="true"></i>
+                            <h3 class="card-title h5">Update Stock</h3>
+                            <p class="card-text">Modify quantities for existing products in your inventory.</p>
+                            <a href="update-stock.html" class="btn btn-warning">Update Stock</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="row">
+   {% for product in products %} 
+   <div class="col-md-3">
+        <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{product.sku}}</h5>
+            <p class="card-text">{{product.product_name}}</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+        </div>
+   </div> 
+   {% endfor %}
+
+        <section class="mt-4" aria-labelledby="activity-heading">
+            <h2 id="activity-heading" class="visually-hidden">Recent Activity</h2>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="mb-0 h5">
+                                <i class="bi bi-clock-history me-2" aria-hidden="true"></i>Recent Activity
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-plus-circle text-success me-2" aria-hidden="true"></i>
+                                        Added new product: "Samsung Galaxy S23"
+                                    </div>
+                                    <time class="text-muted" datetime="2024-01-15T10:30:00Z">2 hours ago</time>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-pencil-square text-warning me-2" aria-hidden="true"></i>
+                                        Updated quantity for "iPhone 14 Pro" to 15 units
+                                    </div>
+                                    <time class="text-muted" datetime="2024-01-15T08:30:00Z">4 hours ago</time>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-exclamation-triangle text-danger me-2" aria-hidden="true"></i>
+                                        Low stock alert for "AirPods Pro"
+                                    </div>
+                                    <time class="text-muted" datetime="2024-01-14T09:30:00Z">1 day ago</time>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-muted small">&copy; 2025 Inventory Manager. All rights reserved.</p>
+                        <a href="#" class="text-decoration-none">Privacy Policy</a> | 
+                        <a href="#" class="text-decoration-none">Terms of Service</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

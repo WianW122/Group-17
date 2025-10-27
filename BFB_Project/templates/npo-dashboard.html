@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NPO Dashboard – Play It Forward</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <h2 class="text-success mb-4">NPO Dashboard</h2>
+    <p class="lead">Request equipment, track deliveries, and submit feedback on received donations.</p>
+
+    <!-- Request Equipment -->
+    <section class="mb-5">
+      <h4 class="mb-3">Request Equipment</h4>
+      <div class="card p-4 shadow-sm">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Item Name</label>
+            <input type="text" class="form-control" placeholder="e.g. Basketball" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Urgency Level</label>
+            <select class="form-select" required>
+              <option value="">Select</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Submit Request</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Track Deliveries -->
+    <section class="mb-5">
+      <h4 class="mb-3">Delivery Tracking</h4>
+      <div class="card p-4 shadow-sm">
+        <table class="table table-bordered">
+          <thead class="table-success">
+            <tr>
+              <th>Delivery ID</th>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Expected Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>102</td>
+              <td>Soccer Balls</td>
+              <td>25</td>
+              <td>In Transit</td>
+              <td>2025-10-26</td>
+            </tr>
+            <tr>
+              <td>103</td>
+              <td>Netballs</td>
+              <td>15</td>
+              <td>Delivered</td>
+              <td>2025-10-20</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Submit Feedback -->
+    <section>
+      <h4 class="mb-3">Submit Feedback</h4>
+      <div class="card p-4 shadow-sm">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Delivery ID</label>
+            <input type="text" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Rating (1–5)</label>
+            <input type="number" class="form-control" min="1" max="5" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Comments</label>
+            <textarea class="form-control" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success">Submit Feedback</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
