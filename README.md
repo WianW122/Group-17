@@ -28,7 +28,7 @@ The Play it Forward project aims to bridge the gap between surplus and need by c
 Open Visual Studio Code
 - Open the Command Palette using:
   ```bash
-  (Ctrl + Shift + P)
+  Ctrl + Shift + P
   ```
 
 - Select:
