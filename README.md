@@ -8,17 +8,21 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 - Track deliveries
 - Submit feedback
 
-## Setup
-1. Clone the repo
-2. Run `npm install`
-3. Start the server with `npm start`
+## Database setup
+### Using SQLite Command Line
+1. Open command prompt/terminal in the project directory
+2. Run the SQL commands:
+   ```bash
+   sqlite3 donation_management.db < donation.sql
+   ```
+   
+## Database Schema
 
-## License
-MIT
+![ERD diagram](https://github.com/user-attachments/assets/2b47a592-9819-4e43-b241-047e84bb3a18)
 
-## ERD diagram
-![ERD diagram](BFB_Project/Images/ERD.jpg)
+### Entity Relationship Diagram (ERD)
 
+The database includes the following tables:
 ## Tables
 1. users: Client information when logging on.
 2. admin_logs: Administrator information.
@@ -69,6 +73,18 @@ The database includes sample data for testing:
 14. Two admin logs with:
     log_id, admin_id, action_type, target_table, target_id, and notes.
 
+## File Structure
+
+```
+├── index.html              # Main dashboard
+├── login.html              # Vendor login page
+├── register.html           # Vendor registration page
+├── schedule-pickup.html    # Schedule pickup for donated items
+├── donation.sql            # Database schema and sample data
+├── donation_management.db  # SQLite database (created after running setup)
+└── readme.md               # This file
+```
+
 ## Usage
 
 1. Initialize the database using the SQLite command line method above
@@ -92,15 +108,5 @@ Safari 14+
 Edge 90+
 Note: This is a static HTML application. For production use, you would need to add backend functionality for database connectivity and form processing.
 
-## File Structure
 
-```
-├── index.html              # Main dashboard
-├── login.html              # Vendor login page
-├── register.html           # Vendor registration page
-├── schedule-pickup.html    # Schedule pickup for donated items
-├── donation.sql            # Database schema and sample data
-├── donation_management.db  # SQLite database (created after running setup)
-└── readme.md               # This file
-```
 
