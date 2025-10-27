@@ -16,7 +16,7 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 ## License
 
 ## ERD diagram
-![Screenshot](images/ERD.png)
+![ERD diagram](BFB_Project/Images/ERD.jpg)
 
 
 
