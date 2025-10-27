@@ -2,6 +2,12 @@
 
 A web platform connecting donor stores and nonprofits to manage sports equipment donations.
 
+## Group members
+- Wian Wentzel: u23552035
+- Martinus van der Merwe: u23524210
+- Eunice Scherman: u23524279
+- Judith Schnackenberg: u22717022
+
 ## Features
 - Log donations
 - Schedule pickups
@@ -15,6 +21,13 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
    ```bash
    sqlite3 donation_management.db < donation.sql
    ```
+### Clone the Repository
+
+Open Visual Studio Code and:
+
+- Open the Command Palette (`Ctrl + Shift + P`)
+- Select `Git: Clone`
+- Paste the repository URL: 
    
 ## Database Schema
 
