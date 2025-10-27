@@ -15,3 +15,15 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 
 ## License
 MIT
+
+
+## File Structure
+
+```
+├── index.html              # Main dashboard
+├── login.html              # Vendor login page
+├── register.html           # Vendor registration page
+├── schedule-pickup.html    # Schedule pickup for donated items
+├── donation.sql            # Database schema and sample data
+├── donation_management.db  # SQLite database (created after running setup)
+└── readme.md               # This file
