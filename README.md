@@ -69,17 +69,6 @@ The database includes sample data for testing:
 14. Two admin logs with:
     log_id, admin_id, action_type, target_table, target_id, and notes.
 
-## File Structure
-
-```
-├── index.html              # Main dashboard
-├── login.html              # Vendor login page
-├── register.html           # Vendor registration page
-├── schedule-pickup.html    # Schedule pickup for donated items
-├── donation.sql            # Database schema and sample data
-├── donation_management.db  # SQLite database (created after running setup)
-└── readme.md               # This file
-
 ## Usage
 
 1. Initialize the database using the SQLite command line method above
@@ -102,4 +91,16 @@ Firefox 88+
 Safari 14+
 Edge 90+
 Note: This is a static HTML application. For production use, you would need to add backend functionality for database connectivity and form processing.
+
+## File Structure
+
+```
+├── index.html              # Main dashboard
+├── login.html              # Vendor login page
+├── register.html           # Vendor registration page
+├── schedule-pickup.html    # Schedule pickup for donated items
+├── donation.sql            # Database schema and sample data
+├── donation_management.db  # SQLite database (created after running setup)
+└── readme.md               # This file
+```
 
