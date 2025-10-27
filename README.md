@@ -1,6 +1,8 @@
-# Play It Forward – Supply Chain App
+# Play It Forward
 
-A web platform connecting donor stores and nonprofits to manage sports equipment donations.
+A smart supply chain platform connecting donors, retailers, and nonprofits across South Africa.
+
+The Play it Forward project aims to bridge the gap between surplus and need by creating a digital platform that connects sporting goods retailers with non-profit organisations to distribute donated sports equipment to underprivileged communities. Through a web-based logistics management system, the platform streamlines the donation, tracking, and delivery process, ensuring efficiency, transparency, and accountability. It encourages community participation by offering incentives to donors, reduces waste by repurposing usable sports gear, and promotes social cohesion by enabling more people—especially in rural areas—to access the equipment they need to participate in sports.
 
 ## Group members
 - Wian Wentzel: u23552035
