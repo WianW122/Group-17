@@ -397,5 +397,6 @@ def delete_center(cid):
 # App run
 # -----------------------------
 if __name__ == '__main__':
-    init_db(seed=True)
+    with app.app_context():
+        init_db(seed=True)
     app.run(debug=True)
