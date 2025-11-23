@@ -21,7 +21,7 @@ The Play it Forward project aims to bridge the gap between surplus and need by c
 1. Open command prompt/terminal in the project directory
 2. Run the SQL commands:
    ```bash
-   sqlite3 donation_management.db < donation.sql
+   sqlite3 donation_management.db < donation_schema_sqlite.sql
    ```
 ### Clone the Repository
 
