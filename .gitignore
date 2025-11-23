@@ -1,0 +1,39 @@
+# Flask instance folder
+instance/
+
+# VS Code settings
+.vscode/
+
+# MacOS files
+.DS_Store
+
+# Logs
+*.log
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Environment variables file
+.env
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Node modules (if any front-end tools used)
+node_modules/
+
+# Others
+*.sqlite3
