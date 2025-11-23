@@ -1,6 +1,14 @@
-# Play It Forward – Supply Chain App
+# Play It Forward
 
-A web platform connecting donor stores and nonprofits to manage sports equipment donations.
+A smart supply chain platform connecting donors, retailers, and nonprofits across South Africa.
+
+The Play it Forward project aims to bridge the gap between surplus and need by creating a digital platform that connects sporting goods retailers with non-profit organisations to distribute donated sports equipment to underprivileged communities. Through a web-based logistics management system, the platform streamlines the donation, tracking, and delivery process, ensuring efficiency, transparency, and accountability. It encourages community participation by offering incentives to donors, reduces waste by repurposing usable sports gear, and promotes social cohesion by enabling more people—especially in rural areas—to access the equipment they need to participate in sports.
+
+## Group members
+- Wian Wentzel: u23552035
+- Martinus van der Merwe: u23524210
+- Eunice Scherman: u23524279
+- Judith Schnackenberg: u22717022
 
 ## Features
 - Log donations
@@ -8,17 +16,37 @@ A web platform connecting donor stores and nonprofits to manage sports equipment
 - Track deliveries
 - Submit feedback
 
-## Setup
-1. Clone the repo
-2. Run `npm install`
-3. Start the server with `npm start`
+## Database setup
+### Using SQLite Command Line
+1. Open command prompt/terminal in the project directory
+2. Run the SQL commands:
+   ```bash
+   sqlite3 donation_management.db < donation_schema_sqlite.sql
+   ```
+### Clone the Repository
 
-## License
-MIT
+Open Visual Studio Code
+- Open the Command Palette using:
+  ```bash
+  Ctrl + Shift + P
+  ```
 
-## ERD diagram
-![ERD diagram](BFB_Project/Images/ERD.jpg)
+- Select:
+  ```bash
+  Git: Clone
+  ```
+- Paste the repository URL:
+  ```bash
+   https://github.com/WianW122/Group-17
+  ```
+   
+## Database Schema
 
+![ERD diagram](https://github.com/user-attachments/assets/2b47a592-9819-4e43-b241-047e84bb3a18)
+
+### Entity Relationship Diagram (ERD)
+
+The database includes the following tables:
 ## Tables
 1. users: Client information when logging on.
 2. admin_logs: Administrator information.
@@ -69,6 +97,18 @@ The database includes sample data for testing:
 14. Two admin logs with:
     log_id, admin_id, action_type, target_table, target_id, and notes.
 
+## File Structure
+
+```
+├── index.html              # Main dashboard
+├── login.html              # Vendor login page
+├── register.html           # Vendor registration page
+├── schedule-pickup.html    # Schedule pickup for donated items
+├── donation.sql            # Database schema and sample data
+├── donation_management.db  # SQLite database (created after running setup)
+└── readme.md               # This file
+```
+
 ## Usage
 
 1. Initialize the database using the SQLite command line method above
@@ -92,15 +132,5 @@ Safari 14+
 Edge 90+
 Note: This is a static HTML application. For production use, you would need to add backend functionality for database connectivity and form processing.
 
-## File Structure
 
-```
-├── index.html              # Main dashboard
-├── login.html              # Vendor login page
-├── register.html           # Vendor registration page
-├── schedule-pickup.html    # Schedule pickup for donated items
-├── donation.sql            # Database schema and sample data
-├── donation_management.db  # SQLite database (created after running setup)
-└── readme.md               # This file
-```
 

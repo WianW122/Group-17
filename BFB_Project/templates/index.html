@@ -26,7 +26,13 @@
       color: var(--text-dark);
     }
 
-    .navbar-brand img { height: 48px; }
+    .navbar-brand img { height: 90px; }
+    .logo-img {
+      height: 200px; /* Increase this value to make it bigger */
+      max-height: none; /* Optional: remove any height limits */
+      width: auto; /* Maintain aspect ratio */
+}
+
 
     /* NAVBAR */
     .navbar {
@@ -139,7 +145,7 @@
     <div class="container">
       <a class="navbar-brand" href="#">
         <!-- logo from your uploads -->
-  <img src="../Images/PlayItForward Logo.png" alt="Play It Forward Logo">
+  <img src="../Images/PlayItForward Logo.png" alt="Play It Forward Logo" class="logo-img">
       </a>
 
       <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation">
