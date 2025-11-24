@@ -397,6 +397,8 @@ def delete_center(cid):
     db.session.commit()
     return jsonify({"message":"Center deleted","center_id":cid})
 
+
+
 # -----------------------------
 # App run
 # -----------------------------

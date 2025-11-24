@@ -11,57 +11,18 @@
   </script>
   
   <style>
-    body {
-      background-color: #fff; /* Match other pages */
-    }
-    h2, h4 {
-      font-weight: 600;
-    }
-    .card {
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-    }
-    .btn-orange {
-      background-color: #ff7f00;
-      color: #fff;
-      border: none;
-      transition: background-color 0.2s;
-    }
-    .btn-orange:hover {
-      background-color: #e67300;
-    }
-    .btn-outline-orange {
-      color: #ff7f00;
-      border-color: #ff7f00;
-      background-color: transparent;
-      transition: all 0.2s;
-    }
-    .btn-outline-orange:hover {
-      color: #fff;
-      background-color: #ff7f00;
-      border-color: #ff7f00;
-    }
-    .form-control:focus, .form-select:focus, textarea:focus {
-      border-color: #ff7f00;
-      box-shadow: 0 0 0 0.2rem rgba(255,127,0,0.25);
-    }
-    a {
-      color: #ff7f00;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    a:hover {
-      color: #e67300;
-      text-decoration: underline;
-    }
-    .table thead {
-      background-color: #ff7f00;
-      color: #fff;
-    }
+    body { background-color: #fff; }
+    h2, h4 { font-weight: 600; }
+    .card { border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-3px); }
+    .btn-orange { background-color: #ff7f00; color: #fff; border: none; transition: background-color 0.2s; }
+    .btn-orange:hover { background-color: #e67300; }
+    .btn-outline-orange { color: #ff7f00; border-color: #ff7f00; background-color: transparent; transition: all 0.2s; }
+    .btn-outline-orange:hover { color: #fff; background-color: #ff7f00; border-color: #ff7f00; }
+    .form-control:focus, .form-select:focus, textarea:focus { border-color: #ff7f00; box-shadow: 0 0 0 0.2rem rgba(255,127,0,0.25); }
+    a { color: #ff7f00; text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #e67300; text-decoration: underline; }
+    .table thead { background-color: #ff7f00; color: #fff; }
   </style>
 </head>
 <body>
@@ -73,18 +34,19 @@
     <section class="mb-5">
       <h4 class="mb-3">Request Equipment</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
-        <form>
+        <div id="requestAlert"></div>
+        <form id="requestForm">
           <div class="mb-3">
             <label class="form-label">Item Name</label>
-            <input type="text" class="form-control" placeholder="e.g. Basketball" required />
+            <input id="itemName" type="text" class="form-control" placeholder="e.g. Basketball" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" placeholder="Enter quantity" required />
+            <input id="itemQty" type="number" class="form-control" placeholder="Enter quantity" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Urgency Level</label>
-            <select class="form-select" required>
+            <select id="itemUrgency" class="form-select" required>
               <option value="">Select</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -92,7 +54,6 @@
             </select>
           </div>
           <button type="submit" class="btn btn-orange w-100 mb-2">Submit Request</button>
-          <!-- Back to Home button -->
           <a href="index.html" class="btn btn-outline-orange w-100">Back to Home</a>
         </form>
       </div>
@@ -102,7 +63,7 @@
     <section class="mb-5">
       <h4 class="mb-3">Delivery Tracking</h4>
       <div class="card p-4 shadow-sm">
-        <table class="table table-bordered mb-0">
+        <table class="table table-bordered mb-0" id="deliveriesTable">
           <thead>
             <tr>
               <th>Delivery ID</th>
@@ -113,20 +74,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>102</td>
-              <td>Soccer Balls</td>
-              <td>25</td>
-              <td>In Transit</td>
-              <td>2025-10-26</td>
-            </tr>
-            <tr>
-              <td>103</td>
-              <td>Netballs</td>
-              <td>15</td>
-              <td>Delivered</td>
-              <td>2025-10-20</td>
-            </tr>
+            <!-- Populated dynamically -->
           </tbody>
         </table>
       </div>
@@ -136,21 +84,21 @@
     <section>
       <h4 class="mb-3">Submit Feedback</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
-        <form>
+        <div id="feedbackAlert"></div>
+        <form id="feedbackForm">
           <div class="mb-3">
             <label class="form-label">Delivery ID</label>
-            <input type="text" class="form-control" placeholder="Enter delivery ID" required />
+            <input id="feedbackDeliveryId" type="text" class="form-control" placeholder="Enter delivery ID" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Rating (1–5)</label>
-            <input type="number" class="form-control" min="1" max="5" placeholder="Rate 1–5" required />
+            <input id="feedbackRating" type="number" min="1" max="5" class="form-control" placeholder="Rate 1–5" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Comments</label>
-            <textarea class="form-control" rows="3" placeholder="Enter your comments" required></textarea>
+            <textarea id="feedbackComments" class="form-control" rows="3" placeholder="Enter your comments" required></textarea>
           </div>
           <button type="submit" class="btn btn-orange w-100 mb-2">Submit Feedback</button>
-          <!-- Back to Home button -->
           <a href="index.html" class="btn btn-outline-orange w-100">Back to Home</a>
         </form>
       </div>
@@ -158,5 +106,83 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // Load deliveries dynamically
+    async function loadDeliveries() {
+      const tableBody = document.querySelector("#deliveriesTable tbody");
+      tableBody.innerHTML = "";
+      try {
+        const res = await fetch(`${API_BASE}/deliveries?npo_id=${user.user_id}`);
+        const deliveries = await res.json();
+        deliveries.forEach(d => {
+          tableBody.innerHTML += `
+            <tr>
+              <td>${d.id}</td>
+              <td>${d.item_name}</td>
+              <td>${d.quantity}</td>
+              <td>${d.status}</td>
+              <td>${d.expected_date}</td>
+            </tr>
+          `;
+        });
+      } catch(err) {
+        tableBody.innerHTML = `<tr><td colspan="5">Unable to load deliveries</td></tr>`;
+      }
+    }
+
+    loadDeliveries();
+
+    // Submit Request
+    document.getElementById("requestForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        npo_id: user.user_id,
+        item_name: document.getElementById("itemName").value,
+        quantity: document.getElementById("itemQty").value,
+        urgency: document.getElementById("itemUrgency").value
+      };
+      const res = await fetch(`${API_BASE}/request-equipment`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      const alertBox = document.getElementById("requestAlert");
+      if(res.ok) {
+        alertBox.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+        document.getElementById("requestForm").reset();
+        loadDeliveries();
+      } else {
+        alertBox.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
+      }
+    });
+
+    // Submit Feedback
+    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        npo_id: user.user_id,
+        delivery_id: document.getElementById("feedbackDeliveryId").value,
+        rating: document.getElementById("feedbackRating").value,
+        comments: document.getElementById("feedbackComments").value
+      };
+      const res = await fetch(`${API_BASE}/submit-feedback`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      const alertBox = document.getElementById("feedbackAlert");
+      if(res.ok) {
+        alertBox.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+        document.getElementById("feedbackForm").reset();
+      } else {
+        alertBox.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
+      }
+    });
+  </script>
 </body>
 </html>
