@@ -146,6 +146,9 @@ The SQLite database supports the end-to-end supply chain:
 ## File Structure 
 ```bash
 
+├─ aplay-it-forward/
+├─.venv
+├─sqlite
 ├─ app.py
 ├─ donation_management.db
 ├─ templates/
@@ -154,11 +157,13 @@ The SQLite database supports the end-to-end supply chain:
 │   ├─ register.html
 │   ├─ donor-dashboard.html
 │   └─ npo-dashboard.html
+│   └─ schedule-pickup.html
 ├─ static/
 │   ├─ css/
 │   └─ js/
 ├─ requirements.txt
 └─ README.md
+
 ```
  ⁠
 ## Notes
