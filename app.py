@@ -429,6 +429,37 @@ def npo_dashboard_page():
 def schedule_pickup_page():
     return render_template("schedule-pickup.html")
 
+# -----------------------------
+# Additional API Endpoints
+# -----------------------------
+
+@app.route('/api/test', methods=['GET'])
+def api_test():
+    """Simple test endpoint to check if the API is working"""
+    return jsonify({"status":"ok","message":"API is reachable"}), 200
+
+
+@app.route('/api/metrics/npo/<int:npo_id>', methods=['GET'])
+def npo_metrics(npo_id):
+    """Return some basic metrics for the NPO dashboard"""
+    # Total donations received
+    total_donations = db.session.query(DonationRecord).join(DonationItem).filter(DonationItem.donation_id==DonationRecord.donation_id).count()
+    
+    # Total pickups scheduled for this NPO (if you link pickups to NPOs)
+    total_pickups = Pickup.query.count()  # adjust if pickups link to NPO
+
+    # Average feedback rating
+    feedbacks = FeedbackReview.query.filter_by(npo_id=npo_id).all()
+    avg_rating = sum([f.rating for f in feedbacks])/len(feedbacks) if feedbacks else None
+
+    return jsonify({
+        "npo_id": npo_id,
+        "total_donations": total_donations,
+        "total_pickups": total_pickups,
+        "average_feedback_rating": avg_rating
+    })
+
+
 
 # -----------------------------
 # App run
