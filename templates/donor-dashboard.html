@@ -10,7 +10,6 @@
     const API_BASE = "http://127.0.0.1:5000/api";
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    // Redirect if not logged in
     if (!user || !user.user_id) {
       window.location.href = "/login";
     }
@@ -40,8 +39,7 @@
     </div>
 
     <script>
-      const logoutBtn = document.getElementById('logoutBtn');
-      logoutBtn?.addEventListener('click', () => {
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
         localStorage.removeItem('user');
         sessionStorage.removeItem('user');
         window.location.href = '/';
@@ -61,6 +59,7 @@
     <section class="mb-5">
       <h4 class="mb-3">Log New Donation</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
+        <div id="donationAlert"></div>
         <form id="donationForm">
           <div class="mb-3">
             <label class="form-label">Item Name</label>
@@ -116,63 +115,86 @@
 
   <script>
     // ------------------------------
+    // UTILITY: REFRESH DASHBOARD
+    // ------------------------------
+    async function refreshDashboard() {
+      await Promise.all([
+        loadTotalDonations(),
+        loadPickups(),
+        loadImpactReports()
+      ]);
+    }
+
+    // ------------------------------
     // LOAD TOTAL DONATIONS
     // ------------------------------
     async function loadTotalDonations() {
-      const res = await fetch(`${API_BASE}/donations/total/${user.user_id}`);
-      const data = await res.json();
-      document.getElementById("totalDonations").innerText = data.total_donations || 0;
+      try {
+        const res = await fetch(`${API_BASE}/donations/total/${user.user_id}`);
+        const data = await res.json();
+        document.getElementById("totalDonations").innerText = data.total_donations || 0;
+      } catch {
+        document.getElementById("totalDonations").innerText = "0";
+      }
     }
 
     // ------------------------------
     // LOAD PICKUPS
     // ------------------------------
     async function loadPickups() {
-      const res = await fetch(`${API_BASE}/pickups/${user.user_id}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`${API_BASE}/pickups/${user.user_id}`);
+        const data = await res.json();
 
-      const tbody = document.getElementById("pickupTable");
-      tbody.innerHTML = "";
+        const tbody = document.getElementById("pickupTable");
+        tbody.innerHTML = "";
 
-      if (!Array.isArray(data) || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center">No pickups scheduled yet.</td></tr>`;
-        return;
+        if (!Array.isArray(data) || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" class="text-center">No pickups scheduled yet.</td></tr>`;
+          return;
+        }
+
+        data.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${p.scheduled_date}</td>
+              <td>${p.pickup_address}</td>
+              <td>${p.status}</td>
+            </tr>
+          `;
+        });
+      } catch {
+        document.getElementById("pickupTable").innerHTML = `<tr><td colspan="3" class="text-center">Unable to load pickups.</td></tr>`;
       }
-
-      data.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${p.scheduled_date}</td>
-            <td>${p.pickup_address}</td>
-            <td>${p.status}</td>
-          </tr>
-        `;
-      });
     }
 
     // ------------------------------
     // LOAD IMPACT REPORTS
     // ------------------------------
     async function loadImpactReports() {
-      const res = await fetch(`${API_BASE}/impact-reports`);
-      const reports = await res.json();
+      try {
+        const res = await fetch(`${API_BASE}/impact-reports`);
+        const reports = await res.json();
 
-      const list = document.getElementById("impactList");
-      list.innerHTML = "";
+        const list = document.getElementById("impactList");
+        list.innerHTML = "";
 
-      if (!Array.isArray(reports) || reports.length === 0) {
-        list.innerHTML = `<li class="list-group-item text-center">No impact reports available yet.</li>`;
-        return;
+        if (!Array.isArray(reports) || reports.length === 0) {
+          list.innerHTML = `<li class="list-group-item text-center">No impact reports available yet.</li>`;
+          return;
+        }
+
+        reports.forEach(r => {
+          list.innerHTML += `
+            <li class="list-group-item">
+              <strong>${r.npo_name}:</strong> Received ${r.item_quantity} ${r.item_name}. 
+              "${r.comments}"
+            </li>
+          `;
+        });
+      } catch {
+        document.getElementById("impactList").innerHTML = `<li class="list-group-item text-center">Unable to load impact reports.</li>`;
       }
-
-      reports.forEach(r => {
-        list.innerHTML += `
-          <li class="list-group-item">
-            <strong>${r.npo_name}:</strong> Received ${r.item_quantity} ${r.item_name}. 
-            "${r.comments}"
-          </li>
-        `;
-      });
     }
 
     // ------------------------------
@@ -180,40 +202,54 @@
     // ------------------------------
     document.getElementById("donationForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const alertBox = document.getElementById("donationAlert");
+      alertBox.innerHTML = "";
 
-      const donationRes = await fetch(`${API_BASE}/donations`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          donor_store_id: user.user_id,
-          donation_amount: 0,
-          donation_type: "item",
-          notes: "Item donation"
-        })
-      });
+      const item_name = document.getElementById("item_name").value;
+      const item_quantity = document.getElementById("item_quantity").value;
+      const item_condition = document.getElementById("item_condition").value;
 
-      const donation = await donationRes.json();
+      try {
+        // 1. Create donation
+        const donationRes = await fetch(`${API_BASE}/donations`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            donor_store_id: user.user_id,
+            donation_amount: 0,
+            donation_type: "item",
+            notes: "Item donation"
+          })
+        });
+        const donation = await donationRes.json();
 
-      await fetch(`${API_BASE}/donations/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          donation_id: donation.donation_id,
-          item_name: item_name.value,
-          item_quantity: item_quantity.value,
-          item_description: item_condition.value
-        })
-      });
+        // 2. Add donation items
+        await fetch(`${API_BASE}/donations/items`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            donation_id: donation.donation_id,
+            item_name,
+            item_quantity,
+            item_description: item_condition
+          })
+        });
 
-      alert("Donation logged successfully!");
-      document.getElementById("donationForm").reset();
-      loadTotalDonations(); // Refresh metric
+        // 3. Show success alert
+        alertBox.innerHTML = `<div class="alert alert-success">Donation logged successfully!</div>`;
+        document.getElementById("donationForm").reset();
+
+        // 4. Refresh entire dashboard dynamically
+        await refreshDashboard();
+
+      } catch (err) {
+        console.error(err);
+        alertBox.innerHTML = `<div class="alert alert-danger">Failed to log donation. Please try again.</div>`;
+      }
     });
 
     // INITIAL LOAD
-    loadPickups();
-    loadImpactReports();
-    loadTotalDonations();
+    refreshDashboard();
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
