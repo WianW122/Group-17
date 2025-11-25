@@ -397,6 +397,37 @@ def delete_center(cid):
     db.session.commit()
     return jsonify({"message":"Center deleted","center_id":cid})
 
+from flask import render_template
+
+# Serve homepage
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+# Serve login page
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+# Serve registration page
+@app.route("/register")
+def register_page():
+    return render_template("register.html")
+
+# Donor dashboard
+@app.route("/donor-dashboard")
+def donor_dashboard_page():
+    return render_template("donor-dashboard.html")
+
+# NPO dashboard
+@app.route("/npo-dashboard")
+def npo_dashboard_page():
+    return render_template("npo-dashboard.html")
+
+# Schedule pickup page
+@app.route("/schedule-pickup")
+def schedule_pickup_page():
+    return render_template("schedule-pickup.html")
 
 
 # -----------------------------
