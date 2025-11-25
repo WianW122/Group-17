@@ -41,10 +41,14 @@
       background-color: #ff7f00; color: #fff;
     }
     .table thead { background-color: #ff7f00; color: #fff; }
+    .signout-btn { position: absolute; top: 20px; right: 20px; }
   </style>
 </head>
 
 <body>
+  <!-- SIGN OUT BUTTON -->
+  <button class="btn btn-outline-danger signout-btn" id="signout-btn">Sign Out</button>
+
   <div class="container py-5">
     <h2 class="text-center text-dark mb-4">NPO Dashboard</h2>
     <p class="lead text-center mb-5">Request equipment, track deliveries, and submit feedback on received donations.</p>
@@ -157,6 +161,15 @@
   </div>
 
 <script>
+  /* ------------------------------
+      SIGN OUT FUNCTIONALITY
+  ------------------------------ */
+  document.getElementById("signout-btn").addEventListener("click", () => {
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    window.location.href = "/"; // redirect to index
+  });
+
   /* ------------------------------
       LOAD METRICS
   ------------------------------ */
