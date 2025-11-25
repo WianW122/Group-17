@@ -32,6 +32,22 @@
     <h2 class="text-center mb-4">Donor Dashboard</h2>
     <p class="lead text-center mb-5">Log new donations, view pickup schedules, and track impact reports.</p>
 
+    <div class="d-flex justify-content-end mb-3">
+  <button id="logoutBtn" class="btn btn-outline-orange">Sign Out</button>
+</div>
+
+<script>
+  const logoutBtn = document.getElementById('logoutBtn');
+  logoutBtn?.addEventListener('click', () => {
+    // Clear logged-in user info
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+    // Redirect to home page
+    window.location.href = '/';
+  });
+</script>
+
+
     <!-- Log New Donation -->
     <section class="mb-5">
       <h4 class="mb-3">Log New Donation</h4>
