@@ -4,144 +4,172 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Donor Dashboard – Play It Forward</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <script>
-      const API_BASE = "http://127.0.0.1:5000/api";  
+    const API_BASE = "http://127.0.0.1:5000/api";
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!user || !user.user_id) {
+      window.location.href = "/login";
+    }
   </script>
-  
+
   <style>
-    body {
-      background-color: #fff; /* Match other pages */
-    }
-    h2, h4 {
-      font-weight: 600;
-    }
-    .card {
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-    }
-    .btn-orange {
-      background-color: #ff7f00;
-      color: #fff;
-      border: none;
-      transition: background-color 0.2s;
-    }
-    .btn-orange:hover {
-      background-color: #e67300;
-    }
-    .btn-outline-orange {
-      color: #ff7f00;
-      border-color: #ff7f00;
-      background-color: transparent;
-      transition: all 0.2s;
-    }
-    .btn-outline-orange:hover {
-      color: #fff;
-      background-color: #ff7f00;
-      border-color: #ff7f00;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #ff7f00;
-      box-shadow: 0 0 0 0.2rem rgba(255,127,0,0.25);
-    }
-    a {
-      color: #ff7f00;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    a:hover {
-      color: #e67300;
-      text-decoration: underline;
-    }
-    .table thead {
-      background-color: #ff7f00;
-      color: #fff;
-    }
+    body { background-color: #fff; }
+    h2, h4 { font-weight: 600; }
+    .card { border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+    .btn-orange { background:#ff7f00; color:#fff; border:none; }
+    .btn-orange:hover { background:#e67300; }
+    .btn-outline-orange { color:#ff7f00; border-color:#ff7f00; }
+    .btn-outline-orange:hover { color:#fff; background:#ff7f00; }
+    .table thead { background:#ff7f00; color:#fff; }
   </style>
 </head>
+
 <body>
   <div class="container py-5">
-    <h2 class="text-center text-dark mb-4">Donor Dashboard</h2>
-    <p class="lead text-center mb-5">Log new donations, view pickup schedules, and track impact reports from NPOs.</p>
+    <h2 class="text-center mb-4">Donor Dashboard</h2>
+    <p class="lead text-center mb-5">Log new donations, view pickup schedules, and track impact reports.</p>
 
-    <!-- Log New Donations -->
+    <!-- Log New Donation -->
     <section class="mb-5">
       <h4 class="mb-3">Log New Donation</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
-        <form>
+        <form id="donationForm">
           <div class="mb-3">
             <label class="form-label">Item Name</label>
-            <input type="text" class="form-control" placeholder="e.g. Soccer Ball" required />
+            <input id="item_name" required class="form-control">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" placeholder="Enter quantity" required />
+            <input id="item_quantity" type="number" required class="form-control">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Condition</label>
-            <select class="form-select" required>
+            <select id="item_condition" required class="form-select">
               <option value="">Select</option>
               <option value="new">New</option>
               <option value="used">Used</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-orange w-100 mb-2">Submit Donation</button>
-          <!-- Button to go to Schedule Pickup page -->
+
+          <button class="btn btn-orange w-100 mb-2">Submit Donation</button>
           <a href="/schedule-pickup" class="btn btn-outline-orange w-100 mb-2">Schedule Pickup</a>
           <a href="/" class="btn btn-outline-orange w-100">Back to Home</a>
-
         </form>
       </div>
     </section>
 
-    <!-- View Pickup Schedules -->
+    <!-- Pickup Schedules -->
     <section class="mb-5">
       <h4 class="mb-3">Pickup Schedule</h4>
-      <div class="card p-4 shadow-sm">
-        <table class="table table-bordered mb-0">
+      <div class="card p-4">
+        <table class="table table-bordered">
           <thead>
             <tr>
               <th>Date</th>
-              <th>Location</th>
+              <th>Address</th>
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>2025-10-25</td>
-              <td>Johannesburg Store</td>
-              <td>Scheduled</td>
-            </tr>
-            <tr>
-              <td>2025-10-28</td>
-              <td>Pretoria Outlet</td>
-              <td>Pending</td>
-            </tr>
-          </tbody>
+          <tbody id="pickupTable"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Track Impact Reports -->
+    <!-- Impact Reports -->
     <section>
       <h4 class="mb-3">Impact Reports from NPOs</h4>
-      <div class="card p-4 shadow-sm">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <strong>Hope Sports Foundation:</strong> Received 20 soccer balls. "Kids are loving their new gear!"
-          </li>
-          <li class="list-group-item">
-            <strong>Play4Change:</strong> Received 15 basketballs. "Thank you for supporting our youth program."
-          </li>
-        </ul>
+      <div class="card p-4">
+        <ul class="list-group list-group-flush" id="impactList"></ul>
       </div>
     </section>
+
   </div>
+
+  <script>
+    // ------------------------------
+    // LOAD PICKUPS
+    // ------------------------------
+    async function loadPickups() {
+      const res = await fetch(`${API_BASE}/pickups/${user.user_id}`);
+      const data = await res.json();
+
+      const tbody = document.getElementById("pickupTable");
+      tbody.innerHTML = "";
+
+      data.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${p.scheduled_date}</td>
+            <td>${p.pickup_address}</td>
+            <td>${p.status}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // ------------------------------
+    // LOAD IMPACT REPORTS
+    // ------------------------------
+    async function loadImpactReports() {
+      const res = await fetch(`${API_BASE}/impact-reports`);
+      const reports = await res.json();
+
+      const list = document.getElementById("impactList");
+      list.innerHTML = "";
+
+      reports.forEach(r => {
+        list.innerHTML += `
+          <li class="list-group-item">
+            <strong>${r.npo_name}:</strong> Received ${r.item_quantity} ${r.item_name}. 
+            "${r.comments}"
+          </li>
+        `;
+      });
+    }
+
+    // ------------------------------
+    // SUBMIT DONATION
+    // ------------------------------
+    document.getElementById("donationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const donationRes = await fetch(`${API_BASE}/donations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          donor_store_id: user.user_id,
+          donation_amount: 0,
+          donation_type: "item",
+          notes: "Item donation"
+        })
+      });
+
+      const donation = await donationRes.json();
+
+      await fetch(`${API_BASE}/donations/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          donation_id: donation.donation_id,
+          item_name: item_name.value,
+          item_quantity: item_quantity.value,
+          item_description: item_condition.value
+        })
+      });
+
+      alert("Donation logged successfully!");
+      document.getElementById("donationForm").reset();
+    });
+
+    // INITIAL LOAD
+    loadPickups();
+    loadImpactReports();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>

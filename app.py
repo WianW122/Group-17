@@ -490,6 +490,45 @@ def get_deliveries(npo_id):
 
     return jsonify(results), 200
 
+# -----------------------------
+# Donor Dashboard Metrics
+# -----------------------------
+@app.route('/api/donor/<int:donor_id>/metrics', methods=['GET'])
+def get_donor_metrics(donor_id):
+    # Total number of donations
+    total_donations = DonationRecord.query.filter_by(donor_store_id=donor_id).count()
+
+    # Total items donated
+    total_items = db.session.query(db.func.sum(DonationItem.item_quantity)) \
+        .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
+        .filter(DonationRecord.donor_store_id == donor_id).scalar() or 0
+
+    # Total value donated
+    total_value = db.session.query(db.func.sum(DonationItem.item_value * DonationItem.item_quantity)) \
+        .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
+        .filter(DonationRecord.donor_store_id == donor_id).scalar() or 0
+
+    # Last 5 donations
+    recent_donations = DonationRecord.query.filter_by(donor_store_id=donor_id) \
+        .order_by(DonationRecord.donation_date.desc()) \
+        .limit(5).all()
+
+    recent_list = []
+    for d in recent_donations:
+        recent_list.append({
+            "donation_id": d.donation_id,
+            "amount": d.donation_amount,
+            "type": d.donation_type,
+            "date": d.donation_date.isoformat()
+        })
+
+    return jsonify({
+        "total_donations": total_donations,
+        "total_items": total_items,
+        "total_value": total_value,
+        "recent_donations": recent_list
+    })
+
 
 # -----------------------------
 # App run
