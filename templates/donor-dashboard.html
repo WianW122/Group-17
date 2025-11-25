@@ -10,6 +10,7 @@
     const API_BASE = "http://127.0.0.1:5000/api";
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
+    // Redirect if not logged in
     if (!user || !user.user_id) {
       window.location.href = "/login";
     }
@@ -24,31 +25,39 @@
     .btn-outline-orange { color:#ff7f00; border-color:#ff7f00; }
     .btn-outline-orange:hover { color:#fff; background:#ff7f00; }
     .table thead { background:#ff7f00; color:#fff; }
+    .text-orange { color:#ff7f00; }
   </style>
 </head>
 
 <body>
   <div class="container py-5">
     <h2 class="text-center mb-4">Donor Dashboard</h2>
-    <p class="lead text-center mb-5">Log new donations, view pickup schedules, and track impact reports.</p>
+    <p class="lead text-center mb-5">Log new donations, view pickup schedules, and track your contribution impact.</p>
 
-    <div class="d-flex justify-content-end mb-3">
-  <button id="logoutBtn" class="btn btn-outline-orange">Sign Out</button>
-</div>
+    <!-- SIGN OUT BUTTON -->
+    <div class="d-flex justify-content-end mb-4">
+      <button id="logoutBtn" class="btn btn-outline-orange">Sign Out</button>
+    </div>
 
-<script>
-  const logoutBtn = document.getElementById('logoutBtn');
-  logoutBtn?.addEventListener('click', () => {
-    // Clear logged-in user info
-    localStorage.removeItem('user');
-    sessionStorage.removeItem('user');
-    // Redirect to home page
-    window.location.href = '/';
-  });
-</script>
+    <script>
+      const logoutBtn = document.getElementById('logoutBtn');
+      logoutBtn?.addEventListener('click', () => {
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
+        window.location.href = '/';
+      });
+    </script>
 
+    <!-- === METRICS SECTION === -->
+    <section class="mb-5">
+      <h4 class="mb-3">Your Donation Metrics</h4>
+      <div class="card p-4 text-center" style="max-width: 400px; margin:auto;">
+        <h5>Total Donations Made</h5>
+        <p id="totalDonations" class="fs-3 fw-bold text-orange">0</p>
+      </div>
+    </section>
 
-    <!-- Log New Donation -->
+    <!-- === LOG NEW DONATION === -->
     <section class="mb-5">
       <h4 class="mb-3">Log New Donation</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
@@ -79,7 +88,7 @@
       </div>
     </section>
 
-    <!-- Pickup Schedules -->
+    <!-- === PICKUP SCHEDULE TABLE === -->
     <section class="mb-5">
       <h4 class="mb-3">Pickup Schedule</h4>
       <div class="card p-4">
@@ -96,17 +105,25 @@
       </div>
     </section>
 
-    <!-- Impact Reports -->
+    <!-- === IMPACT REPORTS === -->
     <section>
       <h4 class="mb-3">Impact Reports from NPOs</h4>
       <div class="card p-4">
         <ul class="list-group list-group-flush" id="impactList"></ul>
       </div>
     </section>
-
   </div>
 
   <script>
+    // ------------------------------
+    // LOAD TOTAL DONATIONS
+    // ------------------------------
+    async function loadTotalDonations() {
+      const res = await fetch(`${API_BASE}/donations/total/${user.user_id}`);
+      const data = await res.json();
+      document.getElementById("totalDonations").innerText = data.total_donations || 0;
+    }
+
     // ------------------------------
     // LOAD PICKUPS
     // ------------------------------
@@ -116,6 +133,11 @@
 
       const tbody = document.getElementById("pickupTable");
       tbody.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center">No pickups scheduled yet.</td></tr>`;
+        return;
+      }
 
       data.forEach(p => {
         tbody.innerHTML += `
@@ -137,6 +159,11 @@
 
       const list = document.getElementById("impactList");
       list.innerHTML = "";
+
+      if (!Array.isArray(reports) || reports.length === 0) {
+        list.innerHTML = `<li class="list-group-item text-center">No impact reports available yet.</li>`;
+        return;
+      }
 
       reports.forEach(r => {
         list.innerHTML += `
@@ -180,11 +207,13 @@
 
       alert("Donation logged successfully!");
       document.getElementById("donationForm").reset();
+      loadTotalDonations(); // Refresh metric
     });
 
     // INITIAL LOAD
     loadPickups();
     loadImpactReports();
+    loadTotalDonations();
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
