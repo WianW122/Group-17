@@ -9,98 +9,68 @@
   <script>
       const API_BASE = "http://127.0.0.1:5000/api";  
   </script>
-  
+
   <style>
-    body {
-      background-color: #fff; /* Match other pages */
-    }
-    h2, h4 {
-      font-weight: 600;
-    }
+    body { background-color: #fff; }
+    h2, h4 { font-weight: 600; }
     .card {
       border-radius: 15px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
       transition: transform 0.2s;
     }
-    .card:hover {
-      transform: translateY(-3px);
-    }
+    .card:hover { transform: translateY(-3px); }
     .btn-orange {
-      background-color: #ff7f00;
-      color: #fff;
-      border: none;
-      transition: background-color 0.2s;
+      background-color: #ff7f00; color: #fff; border: none;
     }
-    .btn-orange:hover {
-      background-color: #e67300;
-    }
+    .btn-orange:hover { background-color: #e67300; }
     .btn-outline-orange {
-      color: #ff7f00;
-      border-color: #ff7f00;
-      background-color: transparent;
-      transition: all 0.2s;
+      color: #ff7f00; border-color: #ff7f00; background: transparent;
     }
     .btn-outline-orange:hover {
-      color: #fff;
-      background-color: #ff7f00;
-      border-color: #ff7f00;
+      background-color: #ff7f00; color: #fff;
     }
-    .form-control:focus, .form-select:focus, textarea:focus {
-      border-color: #ff7f00;
-      box-shadow: 0 0 0 0.2rem rgba(255,127,0,0.25);
-    }
-    a {
-      color: #ff7f00;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    a:hover {
-      color: #e67300;
-      text-decoration: underline;
-    }
-    .table thead {
-      background-color: #ff7f00;
-      color: #fff;
-    }
+    .table thead { background-color: #ff7f00; color: #fff; }
   </style>
 </head>
+
 <body>
   <div class="container py-5">
     <h2 class="text-center text-dark mb-4">NPO Dashboard</h2>
     <p class="lead text-center mb-5">Request equipment, track deliveries, and submit feedback on received donations.</p>
 
-    <!-- Request Equipment -->
+    <!-- REQUEST EQUIPMENT -->
     <section class="mb-5">
       <h4 class="mb-3">Request Equipment</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
-        <form>
+        <form id="equipment-form">
           <div class="mb-3">
             <label class="form-label">Item Name</label>
-            <input type="text" class="form-control" placeholder="e.g. Basketball" required />
+            <input type="text" name="item_name" class="form-control" placeholder="e.g. Basketball" required />
           </div>
+
           <div class="mb-3">
             <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" placeholder="Enter quantity" required />
+            <input type="number" name="quantity" class="form-control" placeholder="Enter quantity" required />
           </div>
+
           <div class="mb-3">
             <label class="form-label">Urgency Level</label>
-            <select class="form-select" required>
+            <select name="urgency_level" class="form-select" required>
               <option value="">Select</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
           </div>
+
           <button type="submit" class="btn btn-orange w-100 mb-2">Submit Request</button>
-          <!-- Schedule Pickup Button -->
           <a href="/schedule-pickup" class="btn btn-outline-orange w-100 mb-2">Schedule Pickup</a>
-          <!-- Back to Home button -->
           <a href="/" class="btn btn-outline-orange w-100">Back to Home</a>
         </form>
       </div>
     </section>
 
-    <!-- Track Deliveries -->
+    <!-- DELIVERY TRACKING -->
     <section class="mb-5">
       <h4 class="mb-3">Delivery Tracking</h4>
       <div class="card p-4 shadow-sm">
@@ -111,54 +81,188 @@
               <th>Item</th>
               <th>Quantity</th>
               <th>Status</th>
-              <th>Expected Date</th>
+              <th>Delivery Date</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>102</td>
-              <td>Soccer Balls</td>
-              <td>25</td>
-              <td>In Transit</td>
-              <td>2025-10-26</td>
-            </tr>
-            <tr>
-              <td>103</td>
-              <td>Netballs</td>
-              <td>15</td>
-              <td>Delivered</td>
-              <td>2025-10-20</td>
-            </tr>
+          <tbody id="delivery-table-body">
+            <tr><td colspan="5" class="text-center text-muted">Loading...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Submit Feedback -->
+    <!-- METRICS -->
+    <section class="mb-5">
+      <h4 class="mb-3">Dashboard Metrics</h4>
+      <div class="row text-center">
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Total Donations Received</h5>
+            <p id="total-donations" class="fs-3">0</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Total Pickups Scheduled</h5>
+            <p id="total-pickups" class="fs-3">0</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="card p-3">
+            <h5>Average Feedback Rating</h5>
+            <p id="avg-feedback" class="fs-3">No feedback yet</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEEDBACK -->
     <section>
       <h4 class="mb-3">Submit Feedback</h4>
       <div class="card p-4 mx-auto" style="max-width: 500px;">
-        <form>
+        <form id="feedback-form">
           <div class="mb-3">
             <label class="form-label">Delivery ID</label>
-            <input type="text" class="form-control" placeholder="Enter delivery ID" required />
+            <input type="text" name="delivery_id" class="form-control" required />
           </div>
+
           <div class="mb-3">
             <label class="form-label">Rating (1–5)</label>
-            <input type="number" class="form-control" min="1" max="5" placeholder="Rate 1–5" required />
+            <input type="number" name="rating" min="1" max="5" class="form-control" required />
           </div>
+
           <div class="mb-3">
             <label class="form-label">Comments</label>
-            <textarea class="form-control" rows="3" placeholder="Enter your comments" required></textarea>
+            <textarea name="comments" class="form-control" rows="3" required></textarea>
           </div>
+
           <button type="submit" class="btn btn-orange w-100 mb-2">Submit Feedback</button>
-          <!-- Back to Home button -->
           <a href="/" class="btn btn-outline-orange w-100">Back to Home</a>
         </form>
       </div>
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const npoId = user.user_id;
+
+  /* ------------------------------
+      LOAD METRICS
+  ------------------------------ */
+  async function loadNpoMetrics() {
+    try {
+      const res = await fetch(`${API_BASE}/metrics/npo/${npoId}`);
+      const data = await res.json();
+      document.getElementById('total-donations').textContent = data.total_donations || 0;
+      document.getElementById('total-pickups').textContent = data.total_pickups || 0;
+      document.getElementById('avg-feedback').textContent =
+        data.average_feedback_rating ? data.average_feedback_rating.toFixed(2) : "No feedback yet";
+    } catch (err) {
+      console.error("Error loading metrics:", err);
+    }
+  }
+
+  /* ------------------------------
+      LOAD DELIVERY TRACKING
+  ------------------------------ */
+  async function loadDeliveries() {
+    try {
+      const res = await fetch(`${API_BASE}/deliveries/${npoId}`);
+      const deliveries = await res.json();
+
+      const tbody = document.getElementById("delivery-table-body");
+      tbody.innerHTML = "";
+
+      if (deliveries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No deliveries found.</td></tr>`;
+        return;
+      }
+
+      deliveries.forEach(delivery => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${delivery.delivery_id}</td>
+          <td>${delivery.item_name}</td>
+          <td>${delivery.quantity}</td>
+          <td>${delivery.status}</td>
+          <td>${delivery.delivery_date ? new Date(delivery.delivery_date).toLocaleDateString() : "Pending"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error("Error loading deliveries:", err);
+    }
+  }
+
+  /* ------------------------------
+      SUBMIT EQUIPMENT REQUEST
+  ------------------------------ */
+  document.getElementById("equipment-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+
+    try {
+      const res = await fetch(`${API_BASE}/donations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          donor_store_id: npoId,
+          donation_amount: 0,
+          donation_type: form.get("urgency_level"),
+          items: [{
+            item_name: form.get("item_name"),
+            item_quantity: parseInt(form.get("quantity"))
+          }]
+        })
+      });
+
+      const data = await res.json();
+      alert(`Request submitted! Donation ID: ${data.donation_id}`);
+
+      e.target.reset();
+      loadNpoMetrics();
+    } catch (err) {
+      console.error("Request failed:", err);
+    }
+  });
+
+  /* ------------------------------
+      SUBMIT FEEDBACK
+  ------------------------------ */
+  document.getElementById("feedback-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+
+    try {
+      await fetch(`${API_BASE}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          delivery_id: parseInt(form.get("delivery_id")),
+          npo_id: npoId,
+          rating: parseInt(form.get("rating")),
+          comments: form.get("comments")
+        })
+      });
+
+      alert("Feedback submitted!");
+      e.target.reset();
+      loadNpoMetrics();
+    } catch (err) {
+      console.error("Feedback failed:", err);
+    }
+  });
+
+  /* Initialize */
+  window.addEventListener("DOMContentLoaded", () => {
+    loadNpoMetrics();
+    loadDeliveries();
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

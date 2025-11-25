@@ -460,6 +460,36 @@ def npo_metrics(npo_id):
     })
 
 
+@app.route('/api/deliveries/<int:npo_id>', methods=['GET'])
+def get_deliveries(npo_id):
+    """
+    Fetch all deliveries (distributed items) related to a specific NPO.
+    """
+    deliveries = (
+        db.session.query(
+            DistributionCenter.center_id.label("delivery_id"),
+            Inventory.item_name.label("item_name"),
+            Inventory.quantity.label("quantity"),
+            db.literal_column("'Delivered'").label("status"),
+            DistributionCenter.created_at.label("delivery_date")
+        )
+        .join(Inventory, Inventory.center_id == DistributionCenter.center_id)
+        .all()
+    )
+
+    results = [
+        {
+            "delivery_id": d.delivery_id,
+            "item_name": d.item_name,
+            "quantity": d.quantity,
+            "status": d.status,
+            "delivery_date": d.delivery_date.isoformat() if d.delivery_date else None
+        }
+        for d in deliveries
+    ]
+
+    return jsonify(results), 200
+
 
 # -----------------------------
 # App run
