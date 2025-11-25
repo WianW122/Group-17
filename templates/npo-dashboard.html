@@ -10,6 +10,17 @@
       const API_BASE = "http://127.0.0.1:5000/api";  
   </script>
 
+  <script>
+    // Check if user is logged in and is an NPO
+    const user = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+    if (!user || user.role !== "npo") {
+      // Not logged in as NPO → redirect to login
+      window.location.href = "/login";
+    }
+
+    const npoId = user.user_id; // reuse the same 'user' variable
+  </script>
+
   <style>
     body { background-color: #fff; }
     h2, h4 { font-weight: 600; }
@@ -146,9 +157,6 @@
   </div>
 
 <script>
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const npoId = user.user_id;
-
   /* ------------------------------
       LOAD METRICS
   ------------------------------ */
