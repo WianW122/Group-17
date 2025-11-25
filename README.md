@@ -1,44 +1,179 @@
 # Play It Forward
 
-A smart supply chain platform connecting donors, retailers, and nonprofits across South Africa.
+A smart supply chain platform connecting donors, retailers, and nonprofits across South Africa.  
+The platform enables the distribution of donated sports equipment to underprivileged communities by connecting donors with non-profit organizations (NPOs). It streamlines donation logistics—capturing donations, scheduling pickups, tracking deliveries, and enabling feedback—to ensure efficiency, transparency, and accountability.
 
-The Play it Forward project aims to bridge the gap between surplus and need by creating a digital platform that connects sporting goods retailers with non-profit organisations to distribute donated sports equipment to underprivileged communities. Through a web-based logistics management system, the platform streamlines the donation, tracking, and delivery process, ensuring efficiency, transparency, and accountability. It encourages community participation by offering incentives to donors, reduces waste by repurposing usable sports gear, and promotes social cohesion by enabling more people—especially in rural areas—to access the equipment they need to participate in sports.
-
-## Group members
+## Group Members
 - Wian Wentzel: u23552035
 - Martinus van der Merwe: u23524210
 - Eunice Scherman: u23524279
 - Judith Schnackenberg: u22717022
 
+---
+
 ## Features
-- Log donations
-- Schedule pickups
-- Track deliveries
-- Submit feedback
 
-## Database setup
-### Using SQLite Command Line
-1. Open command prompt/terminal in the project directory
-2. Run the SQL commands:
-   ```bash
-   sqlite3 donation_management.db < donation_schema_sqlite.sql
-   ```
-### Clone the Repository
+### **User Management**
+- Register and login as Donor or NPO.
+- Dashboard access restricted to authenticated users.
 
-Open Visual Studio Code
-- Open the Command Palette using:
-  ```bash
-  Ctrl + Shift + P
-  ```
+### **Donor Dashboard**
+- Log and manage donations.
+- Track scheduled pickups.
+- Track delivery progress.
+- Submit feedback on NPO interactions.
+- **Metrics:** total donations, total pickups, average feedback rating.
 
-- Select:
-  ```bash
-  Git: Clone
-  ```
-- Paste the repository URL:
-  ```bash
-   https://github.com/WianW122/Group-17
-  ```
+### **NPO Dashboard**
+- Request equipment from donors.
+- Track received donations and deliveries.
+- Submit feedback on donations.
+- **Metrics:** total donations received, number of pickups, average feedback rating.
+
+### **Pickup Scheduling**
+- Donors can schedule pickups.
+- Track pickup status (Scheduled, Completed, etc.)
+
+### **Inventory & Distribution Centers**
+- Manage items stored in distribution centers.
+- Track sorted items and distributed items.
+
+### **Feedback System**
+- Donors and NPOs can leave ratings and comments.
+
+### **Authentication**
+- Secure login using hashed passwords.
+- Session-based access control.
+- Sign-out functionality.
+
+---
+
+## Technology Stack
+
+**Backend:**  
+- Python, Flask  
+- Flask-SQLAlchemy  
+- SQLite  
+- Flask-CORS  
+- Werkzeug (Password hashing)
+
+**Frontend:**  
+- HTML  
+- CSS  
+- JavaScript  
+- Bootstrap 5  
+
+---
+
+## Setup Instructions
+
+### **1. Clone the Repository**
+```bash
+git clone https://github.com/<your-username>/play-it-forward.git
+cd play-it-forward
+```
+### 2. Create a Virtual Environment and Install Dependencies
+```bash
+python -m venv venv
+```
+#### Activate the environment:
+Windows:
+```bash
+venv\Scripts\activate
+```
+Mac/Linux:
+```bash
+source venv/bin/activate
+```
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the Flask Application
+```bash
+python app.py
+```
+
+### 4. Open the Application
+Visit:
+http://127.0.0.1:5000
+
+### 5. Use the Application
+- Register as a Donor or NPO.
+- Explore dashboards, submit donations/requests.
+- Track deliveries and provide feedback.
+- API Endpoints (Summary)
+- Function	Endpoint
+- Register user	/api/register
+- Login user	/api/login
+- Manage users	/api/users/<id>
+- Donations CRUD	/api/donations
+- Pickup scheduling	/api/pickups
+- Inventory management	/api/inventory
+- Feedback reviews	/api/feedback
+- Distribution centers	/api/centers
+- NPO metrics	/api/metrics/npo/<id>
+- Deliveries for NPO	/api/deliveries/<id>
+## Database Overview
+The SQLite database supports the end-to-end supply chain:
+
+### Core Tables
+- users – donor and NPO accounts
+- npo_profiles – NPO information
+- donor_store_profiles – donor details
+- donation_records – all past donations
+- donation_item_detail – detailed item data per donation
+- pickup_scheduling – logistics and pickup details
+- collected_items – items collected from donors
+- inventory – items stored at distribution centers
+- distribution_centres – warehouse locations
+- sorting_records – category sorting details
+- distributed_items – items sent to communities
+- delivery_confirmation – proof of delivery
+- feedback_reviews – ratings and comments
+- notifications – communication logs
+- admin_logs – admin activity tracking
+
+### Sample Data Included
+- 5 user accounts
+- 2 NPO profiles
+- 3 donation records
+- 2 collected item records
+- 2 inventory entries
+- Multiple feedback, pickup, and distribution records
+
+## File Structure 
+```bash
+
+├─ app.py
+├─ donation_management.db
+├─ templates/
+│   ├─ index.html
+│   ├─ login.html
+│   ├─ register.html
+│   ├─ donor-dashboard.html
+│   └─ npo-dashboard.html
+├─ static/
+│   ├─ css/
+│   └─ js/
+├─ requirements.txt
+└─ README.md
+```
+ ⁠
+## Notes
+- A default admin user is created on first run:
+- Email: admin@example.com
+- Password: admin123
+- Ensure your virtual environment is activated before running the backend.
+- Use multiple browsers or private windows to simulate Donor/NPO interactions.
+
+## The application works with all modern browsers that support HTML5 and CSS3, including:
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
    
 ## Database Schema
 
@@ -96,41 +231,4 @@ The database includes sample data for testing:
     notification_id, sender_role, recipient_role, message, related_item_id, and notification_type.
 14. Two admin logs with:
     log_id, admin_id, action_type, target_table, target_id, and notes.
-
-## File Structure
-
-```
-├── index.html              # Main dashboard
-├── login.html              # Vendor login page
-├── register.html           # Vendor registration page
-├── schedule-pickup.html    # Schedule pickup for donated items
-├── donation.sql            # Database schema and sample data
-├── donation_management.db  # SQLite database (created after running setup)
-└── readme.md               # This file
-```
-
-## Usage
-
-1. Initialize the database using the SQLite command line method above
-2. Open `index.html` in your web browser
-3. Navigate through the different pages to manage your inventory
-
-## Technologies Used
-
-- **HTML5**: Structure and forms
-- **Bootstrap 5.3.8**: UI framework and styling
-- **Bootstrap Icons**: Icon set
-- **SQLite**: Database for data persistence
-
-## Browser Compatibility
-
-The application works with all modern browsers that support HTML5 and CSS3, including:
-
-Chrome 90+
-Firefox 88+
-Safari 14+
-Edge 90+
-Note: This is a static HTML application. For production use, you would need to add backend functionality for database connectivity and form processing.
-
-
 
