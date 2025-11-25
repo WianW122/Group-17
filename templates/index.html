@@ -25,70 +25,18 @@
       color: var(--text-dark);
     }
 
-    .navbar {
-      background: white;
-    }
-
+    .navbar { background: white; }
     .navbar-brand img { height: 48px; }
+    .nav-btn { border-color: var(--brand-primary) !important; color: var(--brand-primary) !important; }
+    .nav-btn:hover { background: var(--brand-primary) !important; color: white !important; }
 
-    .nav-btn {
-      border-color: var(--brand-primary) !important;
-      color: var(--brand-primary) !important;
-    }
-    .nav-btn:hover {
-      background: var(--brand-primary) !important;
-      color: white !important;
-    }
-
-    /* HERO */
-    .hero {
-      background-color: white;
-      color: var(--black);
-      padding: 80px 0;
-      text-align: center;
-    }
-
-    .hero-title-img {
-      max-width: 820px;
-      width: 90%;
-      height: auto;
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      color: var(--brand-primary);
-      font-weight: bold;
-    }
-
-    .feature-card {
-      border: none;
-      border-radius: 0.75rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-      background: white;
-    }
-
-    .block-image {
-      max-height: 240px;
-      object-fit: contain;
-      width: 100%;
-      background: white;
-      border-radius: 0.5rem;
-      margin-bottom: .8rem;
-    }
-
-    .btn-brand {
-      background: var(--brand-primary);
-      color: white;
-      border: 1px solid var(--brand-primary);
-    }
-
-    footer {
-      background: var(--brand-primary);
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-
+    .hero { background-color: white; color: var(--black); padding: 80px 0; text-align: center; }
+    .hero-title-img { max-width: 820px; width: 90%; height: auto; margin-bottom: 1rem; }
+    .section-title { color: var(--brand-primary); font-weight: bold; }
+    .feature-card { border: none; border-radius: 0.75rem; box-shadow: 0 6px 20px rgba(0,0,0,0.06); background: white; }
+    .block-image { max-height: 240px; object-fit: contain; width: 100%; background: white; border-radius: 0.5rem; margin-bottom: .8rem; }
+    .btn-brand { background: var(--brand-primary); color: white; border: 1px solid var(--brand-primary); }
+    footer { background: var(--brand-primary); color: white; text-align: center; padding: 1rem; }
   </style>
 </head>
 <body>
@@ -97,7 +45,7 @@
   <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img src="../Images/PlayItForward Logo.png" alt="Play It Forward Logo">
+        <img src="{{ url_for('static', filename='images/PlayItForward Logo.png') }}" alt="Play It Forward Logo">
       </a>
 
       <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -123,7 +71,7 @@
   <!-- HERO SECTION -->
   <section class="hero">
     <div class="container-fluid px-5 text-center">
-      <img src="../Images/Hero Title Image.png" class="hero-title-img" alt="Hero Title">
+      <img src="{{ url_for('static', filename='images/Hero Title Image.png') }}" class="hero-title-img" alt="Hero Title">
       <p class="lead">A smart supply chain platform connecting donors, retailers, and nonprofits across South Africa.</p>
 
       <a href="#" id="exploreDashboardsBtn" class="btn btn-brand btn-lg mt-4">
@@ -141,7 +89,7 @@
 
         <div class="col-md-4">
           <div class="feature-card p-4 h-100">
-            <img src="../Images/how1.png" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/how1.png') }}" class="block-image" alt="">
             <h5 class="fw-bold" style="color:var(--brand-primary)">1. Donations Logged</h5>
             <p>Donor stores log sports equipment and track items digitally.</p>
           </div>
@@ -149,7 +97,7 @@
 
         <div class="col-md-4">
           <div class="feature-card p-4 h-100">
-            <img src="../Images/how2.png" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/how2.png') }}" class="block-image" alt="">
             <h5 class="fw-bold" style="color:var(--brand-primary)">2. Pickups Scheduled</h5>
             <p>Logistics teams plan routes and move goods efficiently.</p>
           </div>
@@ -157,7 +105,7 @@
 
         <div class="col-md-4">
           <div class="feature-card p-4 h-100">
-            <img src="../Images/how3.png" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/how3.png') }}" class="block-image" alt="">
             <h5 class="fw-bold" style="color:var(--brand-primary)">3. Delivered to NPOs</h5>
             <p>Equipment reaches communities — with full transparency.</p>
           </div>
@@ -177,8 +125,8 @@
         <!-- DONOR -->
         <div class="col-md-6">
           <div class="feature-card p-4 text-center">
-            <img src="../Images/donor header.png" class="block-image" alt="">
-            <img src="../Images/donor image.png" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/donor header.png') }}" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/donor image.png') }}" class="block-image" alt="">
             <h5 class="fw-bold" style="color:var(--brand-primary)">Donor Dashboard</h5>
             <p>Track donations, pickups, and delivery impact.</p>
             <a href="donor-dashboard.html" class="btn btn-brand btn-sm">Continue</a>
@@ -188,8 +136,8 @@
         <!-- NPO -->
         <div class="col-md-6">
           <div class="feature-card p-4 text-center">
-            <img src="../Images/npo header.png" class="block-image" alt="">
-            <img src="../Images/npo Image.png" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/npo header.png') }}" class="block-image" alt="">
+            <img src="{{ url_for('static', filename='images/npo Image.png') }}" class="block-image" alt="">
             <h5 class="fw-bold" style="color:var(--brand-primary)">NPO Dashboard</h5>
             <p>Request items and track delivery updates.</p>
             <a href="npo-dashboard.html" class="btn btn-brand btn-sm">Continue</a>
@@ -211,26 +159,17 @@
       ? 'http://localhost:5000/api'
       : window.location.origin + '/api';
 
-    /* ---------- Dynamic Explore Button ---------- */
     document.getElementById("exploreDashboardsBtn").addEventListener("click", () => {
       const user = JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user"));
-
-      if (!user) {
-        alert("Please login first.");
-        return;
-      }
-
+      if (!user) { alert("Please login first."); return; }
       if (user.role === "donor") window.location.href = "donor-dashboard.html";
       else if (user.role === "npo") window.location.href = "npo-dashboard.html";
     });
 
-    /* ---------- Auto-hide dashboard cards if logged in ---------- */
     document.addEventListener("DOMContentLoaded", () => {
       const user = JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user"));
-
       if (user) {
         document.getElementById("dashboardCards").style.display = "none";
-
         const container = document.querySelector("#dashboards .container");
         const btn = document.createElement("a");
         btn.className = "btn btn-brand btn-lg mt-3";
@@ -240,30 +179,22 @@
       }
     });
 
-    /* ---------- KPIs Loader ---------- */
     async function fetchKPIs() {
       try {
         const res = await fetch(API_BASE + "/kpis");
         const data = await res.json();
-
         const bar = document.createElement("div");
         bar.className = "container d-flex justify-content-center gap-3 my-4";
-
         bar.innerHTML = `
           <div class="p-2 bg-white shadow-sm rounded">Donations: <strong>${data.total_donations}</strong></div>
           <div class="p-2 bg-white shadow-sm rounded">Monetary (ZAR): <strong>R${data.total_monetary.toFixed(2)}</strong></div>
           <div class="p-2 bg-white shadow-sm rounded">Items in-kind: <strong>${data.total_items_in_kind}</strong></div>
           <div class="p-2 bg-white shadow-sm rounded">Pickups Scheduled: <strong>${data.pickups_scheduled}</strong></div>
         `;
-
         document.querySelector(".hero .container-fluid").appendChild(bar);
-      } catch (err) {
-        console.error("KPI load failed", err);
-      }
+      } catch (err) { console.error("KPI load failed", err); }
     }
-
     fetchKPIs();
-
   </script>
 
   <!-- Bootstrap JS -->
