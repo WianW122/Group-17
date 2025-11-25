@@ -1,12 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
-
-
-
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, "donation_management.db")
@@ -16,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
-
 
 # Models
 class User(db.Model):
@@ -62,9 +58,9 @@ class NPOProfile(db.Model):
 class DonationRecord(db.Model):
     __tablename__ = 'donation_records'
     donation_id = db.Column(db.Integer, primary_key=True)
-    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'))
+    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'), nullable=True)
     donation_date = db.Column(db.DateTime, default=datetime.utcnow)
-    donation_amount = db.Column(db.Float, nullable=False)
+    donation_amount = db.Column(db.Float, nullable=False, default=0.0)
     donation_type = db.Column(db.String(100))
     notes = db.Column(db.Text)
 
@@ -80,7 +76,7 @@ class DonationItem(db.Model):
 class Pickup(db.Model):
     __tablename__ = 'pickup_scheduling'
     pickup_id = db.Column(db.Integer, primary_key=True)
-    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'))
+    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'), nullable=True)
     scheduled_date = db.Column(db.DateTime, nullable=False)
     pickup_address = db.Column(db.Text)
     contact_person = db.Column(db.String(200))
@@ -98,8 +94,8 @@ class Inventory(db.Model):
 class FeedbackReview(db.Model):
     __tablename__ = 'feedback_reviews'
     review_id = db.Column(db.Integer, primary_key=True)
-    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'))
-    npo_id = db.Column(db.Integer, db.ForeignKey('npo_profiles.npo_id'))
+    donor_store_id = db.Column(db.Integer, db.ForeignKey('donor_store_profiles.donor_store_id'), nullable=True)
+    npo_id = db.Column(db.Integer, db.ForeignKey('npo_profiles.npo_id'), nullable=True)
     rating = db.Column(db.Integer)
     comments = db.Column(db.Text)
     review_date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -198,13 +194,25 @@ def delete_user(uid):
 # -----------------------------
 @app.route('/api/donations', methods=['POST'])
 def create_donation():
+    """
+    Create a donation record. donor_store_id is OPTIONAL now:
+    - If a donor_store_id is provided, this is a donor donation.
+    - If omitted and donation_type == 'request', it's an NPO equipment request.
+    """
     data = request.json or {}
-    donor_store_id, donation_amount, donation_type, notes, items = data.get('donor_store_id'), data.get('donation_amount',0.0), data.get('donation_type'), data.get('notes'), data.get('items',[])
-    if not donor_store_id: return jsonify({"error":"donor_store_id required"}),400
+    donor_store_id = data.get('donor_store_id')  # may be None for requests
+    donation_amount = data.get('donation_amount', 0.0)
+    donation_type = data.get('donation_type')
+    notes = data.get('notes')
+    items = data.get('items', [])
+
+    # create the DonationRecord (donor_store_id can be None)
     max_id = db.session.query(db.func.max(DonationRecord.donation_id)).scalar() or 0
     dr = DonationRecord(donation_id=max_id+1, donor_store_id=donor_store_id, donation_amount=donation_amount, donation_type=donation_type, notes=notes)
     db.session.add(dr)
     db.session.commit()
+
+    # add items
     for it in items:
         max_item = db.session.query(db.func.max(DonationItem.item_id)).scalar() or 0
         di = DonationItem(item_id=max_item+1, donation_id=dr.donation_id, item_name=it.get('item_name'), item_description=it.get('item_description'), item_quantity=it.get('item_quantity',0), item_value=it.get('item_value'))
@@ -249,10 +257,24 @@ def delete_donation(did):
 @app.route('/api/pickups', methods=['POST'])
 def schedule_pickup():
     data = request.json or {}
-    donor_store_id, scheduled_date, pickup_address, contact_person, contact_phone = data.get('donor_store_id'), data.get('scheduled_date'), data.get('pickup_address'), data.get('contact_person'), data.get('contact_phone')
-    if not (donor_store_id and scheduled_date): return jsonify({"error":"donor_store_id and scheduled_date required"}),400
+    # accept either donor_store_id or donor_id from frontend
+    donor_store_id = data.get('donor_store_id') or data.get('donor_id')
+    scheduled_date = data.get('scheduled_date')
+    pickup_address = data.get('pickup_address')
+    contact_person = data.get('contact_person')
+    contact_phone = data.get('contact_phone')
+
+    if not (scheduled_date):
+        return jsonify({"error":"scheduled_date required"}),400
+
     max_id = db.session.query(db.func.max(Pickup.pickup_id)).scalar() or 0
-    p = Pickup(pickup_id=max_id+1, donor_store_id=donor_store_id, scheduled_date=datetime.fromisoformat(scheduled_date), pickup_address=pickup_address, contact_person=contact_person, contact_phone=contact_phone, status='Scheduled')
+    try:
+        scheduled_dt = datetime.fromisoformat(scheduled_date)
+    except Exception:
+        # if user sent date only like "2025-10-25", fromisoformat works; otherwise handle gracefully
+        scheduled_dt = datetime.strptime(scheduled_date.split("T")[0], "%Y-%m-%d")
+
+    p = Pickup(pickup_id=max_id+1, donor_store_id=donor_store_id, scheduled_date=scheduled_dt, pickup_address=pickup_address, contact_person=contact_person, contact_phone=contact_phone, status='Scheduled')
     db.session.add(p)
     db.session.commit()
     return jsonify({"message":"Pickup scheduled","pickup_id":p.pickup_id}),201
@@ -324,14 +346,26 @@ def delete_inventory(iid):
 @app.route('/api/feedback', methods=['POST'])
 def create_feedback():
     data = request.json or {}
-    donor_store_id, npo_id, rating, comments = data.get('donor_store_id'), data.get('npo_id'), data.get('rating'), data.get('comments','')
-    if not (donor_store_id and npo_id and rating): return jsonify({"error":"donor_store_id, npo_id, and rating are required"}),400
-    if rating < 1 or rating > 5: return jsonify({"error":"Rating must be between 1 and 5"}),400
+    donor_store_id = data.get('donor_store_id')  # optional now
+    npo_id = data.get('npo_id')
+    rating = data.get('rating')
+    comments = data.get('comments','')
+
+    # allow feedback even if donor_store_id is not provided (NPOs can send feedback referencing deliveries)
+    if not (npo_id and rating):
+        return jsonify({"error":"npo_id and rating are required"}),400
+    try:
+        rating_int = int(rating)
+    except Exception:
+        return jsonify({"error":"rating must be an integer 1-5"}),400
+    if rating_int < 1 or rating_int > 5:
+        return jsonify({"error":"Rating must be between 1 and 5"}),400
+
     max_id = db.session.query(db.func.max(FeedbackReview.review_id)).scalar() or 0
-    review = FeedbackReview(review_id=max_id+1, donor_store_id=donor_store_id, npo_id=npo_id, rating=rating, comments=comments)
+    review = FeedbackReview(review_id=max_id+1, donor_store_id=donor_store_id, npo_id=npo_id, rating=rating_int, comments=comments)
     db.session.add(review)
     db.session.commit()
-    return jsonify({"message":"Feedback submitted","review_id":review.review_id,"donor_store_id":donor_store_id,"npo_id":npo_id,"rating":rating,"comments":comments}),201
+    return jsonify({"message":"Feedback submitted","review_id":review.review_id,"donor_store_id":donor_store_id,"npo_id":npo_id,"rating":rating_int,"comments":comments}),201
 
 @app.route('/api/feedback', methods=['GET'])
 def get_feedback():
@@ -397,73 +431,48 @@ def delete_center(cid):
     db.session.commit()
     return jsonify({"message":"Center deleted","center_id":cid})
 
-from flask import render_template
-
-# Serve homepage
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-# Serve login page
-@app.route("/login")
-def login_page():
-    return render_template("login.html")
-
-# Serve registration page
-@app.route("/register")
-def register_page():
-    return render_template("register.html")
-
-# Donor dashboard
-@app.route("/donor-dashboard")
-def donor_dashboard_page():
-    return render_template("donor-dashboard.html")
-
-# NPO dashboard
-@app.route("/npo-dashboard")
-def npo_dashboard_page():
-    return render_template("npo-dashboard.html")
-
-# Schedule pickup page
-@app.route("/schedule-pickup")
-def schedule_pickup_page():
-    return render_template("schedule-pickup.html")
-
 # -----------------------------
-# Additional API Endpoints
+# Additional API Endpoints (metrics & deliveries)
 # -----------------------------
-
 @app.route('/api/test', methods=['GET'])
 def api_test():
-    """Simple test endpoint to check if the API is working"""
     return jsonify({"status":"ok","message":"API is reachable"}), 200
-
 
 @app.route('/api/metrics/npo/<int:npo_id>', methods=['GET'])
 def npo_metrics(npo_id):
-    """Return some basic metrics for the NPO dashboard"""
-    # Total donations received
-    total_donations = db.session.query(DonationRecord).join(DonationItem).filter(DonationItem.donation_id==DonationRecord.donation_id).count()
-    
-    # Total pickups scheduled for this NPO (if you link pickups to NPOs)
-    total_pickups = Pickup.query.count()  # adjust if pickups link to NPO
+    """
+    Returns metrics useful for NPO dashboard.
+    Note: current schema doesn't link donations/pickups directly to NPOs in all cases,
+    so some metrics are global or use available links (feedback -> npo_id).
+    """
+    # Total donations (sum of item quantities) excluding 'request' type records
+    total_items = db.session.query(db.func.coalesce(db.func.sum(DonationItem.item_quantity), 0)) \
+        .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
+        .filter(DonationRecord.donation_type != 'request').scalar() or 0
 
-    # Average feedback rating
+    # Total pickups (global count) — pickups table doesn't have npo link in current schema
+    total_pickups = Pickup.query.count() or 0
+
+    # Average feedback rating for this NPO
     feedbacks = FeedbackReview.query.filter_by(npo_id=npo_id).all()
-    avg_rating = sum([f.rating for f in feedbacks])/len(feedbacks) if feedbacks else None
+    avg_rating = None
+    if feedbacks:
+        ratings = [f.rating for f in feedbacks if f.rating is not None]
+        if len(ratings) > 0:
+            avg_rating = sum(ratings) / len(ratings)
 
     return jsonify({
         "npo_id": npo_id,
-        "total_donations": total_donations,
-        "total_pickups": total_pickups,
+        "total_donations": int(total_items),
+        "total_pickups": int(total_pickups),
         "average_feedback_rating": avg_rating
     })
-
 
 @app.route('/api/deliveries/<int:npo_id>', methods=['GET'])
 def get_deliveries(npo_id):
     """
-    Fetch all deliveries (distributed items) related to a specific NPO.
+    A simple deliveries view: currently returns inventory lines (example).
+    This function can be updated later once distributed_items table / mappings exist.
     """
     deliveries = (
         db.session.query(
@@ -495,20 +504,14 @@ def get_deliveries(npo_id):
 # -----------------------------
 @app.route('/api/donor/<int:donor_id>/metrics', methods=['GET'])
 def get_donor_metrics(donor_id):
-    # Total number of donations
     total_donations = DonationRecord.query.filter_by(donor_store_id=donor_id).count()
-
-    # Total items donated
-    total_items = db.session.query(db.func.sum(DonationItem.item_quantity)) \
+    total_items = db.session.query(db.func.coalesce(db.func.sum(DonationItem.item_quantity), 0)) \
+        .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
+        .filter(DonationRecord.donor_store_id == donor_id).scalar() or 0
+    total_value = db.session.query(db.func.coalesce(db.func.sum(DonationItem.item_value * DonationItem.item_quantity), 0)) \
         .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
         .filter(DonationRecord.donor_store_id == donor_id).scalar() or 0
 
-    # Total value donated
-    total_value = db.session.query(db.func.sum(DonationItem.item_value * DonationItem.item_quantity)) \
-        .join(DonationRecord, DonationRecord.donation_id == DonationItem.donation_id) \
-        .filter(DonationRecord.donor_store_id == donor_id).scalar() or 0
-
-    # Last 5 donations
     recent_donations = DonationRecord.query.filter_by(donor_store_id=donor_id) \
         .order_by(DonationRecord.donation_date.desc()) \
         .limit(5).all()
@@ -524,11 +527,37 @@ def get_donor_metrics(donor_id):
 
     return jsonify({
         "total_donations": total_donations,
-        "total_items": total_items,
-        "total_value": total_value,
+        "total_items": int(total_items),
+        "total_value": float(total_value),
         "recent_donations": recent_list
     })
 
+# -----------------------------
+# Serve frontend pages
+# -----------------------------
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/register")
+def register_page():
+    return render_template("register.html")
+
+@app.route("/donor-dashboard")
+def donor_dashboard_page():
+    return render_template("donor-dashboard.html")
+
+@app.route("/npo-dashboard")
+def npo_dashboard_page():
+    return render_template("npo-dashboard.html")
+
+@app.route("/schedule-pickup")
+def schedule_pickup_page():
+    return render_template("schedule-pickup.html")
 
 # -----------------------------
 # App run

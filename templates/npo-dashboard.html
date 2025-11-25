@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NPO Dashboard – Play It Forward</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
   <script>
-      const API_BASE = "http://127.0.0.1:5000/api";  
+      const API_BASE = "http://127.0.0.1:5000/api";
   </script>
 
   <script>
@@ -17,29 +16,18 @@
       // Not logged in as NPO → redirect to login
       window.location.href = "/login";
     }
-
-    const npoId = user.user_id; // reuse the same 'user' variable
+    const npoId = user.user_id;
   </script>
 
   <style>
     body { background-color: #fff; }
     h2, h4 { font-weight: 600; }
-    .card {
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
+    .card { border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); transition: transform 0.2s; }
     .card:hover { transform: translateY(-3px); }
-    .btn-orange {
-      background-color: #ff7f00; color: #fff; border: none;
-    }
+    .btn-orange { background-color: #ff7f00; color: #fff; border: none; }
     .btn-orange:hover { background-color: #e67300; }
-    .btn-outline-orange {
-      color: #ff7f00; border-color: #ff7f00; background: transparent;
-    }
-    .btn-outline-orange:hover {
-      background-color: #ff7f00; color: #fff;
-    }
+    .btn-outline-orange { color: #ff7f00; border-color: #ff7f00; background: transparent; }
+    .btn-outline-orange:hover { background-color: #ff7f00; color: #fff; }
     .table thead { background-color: #ff7f00; color: #fff; }
     .signout-btn { position: absolute; top: 20px; right: 20px; }
   </style>
@@ -139,8 +127,8 @@
       <div class="card p-4 mx-auto" style="max-width: 500px;">
         <form id="feedback-form">
           <div class="mb-3">
-            <label class="form-label">Delivery ID</label>
-            <input type="text" name="delivery_id" class="form-control" required />
+            <label class="form-label">Delivery ID (optional)</label>
+            <input type="text" name="delivery_id" class="form-control" />
           </div>
 
           <div class="mb-3">
@@ -197,7 +185,7 @@
       const tbody = document.getElementById("delivery-table-body");
       tbody.innerHTML = "";
 
-      if (deliveries.length === 0) {
+      if (!deliveries || deliveries.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No deliveries found.</td></tr>`;
         return;
       }
@@ -215,11 +203,14 @@
       });
     } catch (err) {
       console.error("Error loading deliveries:", err);
+      const tbody = document.getElementById("delivery-table-body");
+      tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Error loading deliveries</td></tr>`;
     }
   }
 
   /* ------------------------------
       SUBMIT EQUIPMENT REQUEST
+      (posts a donation record without donor_store_id -> donation_type='request')
   ------------------------------ */
   document.getElementById("equipment-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -230,50 +221,69 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          donor_store_id: npoId,
+          // donor_store_id omitted intentionally for requests
           donation_amount: 0,
-          donation_type: form.get("urgency_level"),
+          donation_type: "request",
+          notes: `Requested by NPO ${npoId}`,
           items: [{
             item_name: form.get("item_name"),
-            item_quantity: parseInt(form.get("quantity"))
+            item_quantity: parseInt(form.get("quantity") || 0),
+            item_value: 0
           }]
         })
       });
 
       const data = await res.json();
+      if (!res.ok) {
+        alert("Request failed: " + (data.error || JSON.stringify(data)));
+        return;
+      }
       alert(`Request submitted! Donation ID: ${data.donation_id}`);
-
       e.target.reset();
       loadNpoMetrics();
     } catch (err) {
       console.error("Request failed:", err);
+      alert("Failed to submit request");
     }
   });
 
   /* ------------------------------
       SUBMIT FEEDBACK
+      (npo_id is required)
   ------------------------------ */
   document.getElementById("feedback-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const form = new FormData(e.target);
 
     try {
-      await fetch(`${API_BASE}/feedback`, {
+      const payload = {
+        npo_id: npoId,
+        rating: parseInt(form.get("rating")),
+        comments: form.get("comments")
+      };
+      // optional delivery/donor id if user provided it (not required)
+      const deliveryId = form.get("delivery_id");
+      if (deliveryId) {
+        payload.delivery_id = parseInt(deliveryId);
+      }
+
+      const res = await fetch(`${API_BASE}/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          delivery_id: parseInt(form.get("delivery_id")),
-          npo_id: npoId,
-          rating: parseInt(form.get("rating")),
-          comments: form.get("comments")
-        })
+        body: JSON.stringify(payload)
       });
 
+      const data = await res.json();
+      if (!res.ok) {
+        alert("Failed to submit feedback: " + (data.error || JSON.stringify(data)));
+        return;
+      }
       alert("Feedback submitted!");
       e.target.reset();
       loadNpoMetrics();
     } catch (err) {
       console.error("Feedback failed:", err);
+      alert("Failed to submit feedback");
     }
   });
 
