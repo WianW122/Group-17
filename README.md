@@ -143,17 +143,24 @@ The SQLite database supports the end-to-end supply chain:
 - 2 inventory entries
 - Multiple feedback, pickup, and distribution records
 
-## File Structure (Legacy Frontend)
+## File Structure 
 ```bash
-├── index.html
-├── login.html
-├── register.html
-├── schedule-pickup.html
-├── donation.sql
-├── donation_management.db
-└── readme.md
-```
 
+├─ app.py
+├─ donation_management.db
+├─ templates/
+│   ├─ index.html
+│   ├─ login.html
+│   ├─ register.html
+│   ├─ donor-dashboard.html
+│   └─ npo-dashboard.html
+├─ static/
+│   ├─ css/
+│   └─ js/
+├─ requirements.txt
+└─ README.md
+```
+ ⁠
 ## Notes
 - A default admin user is created on first run:
 - Email: admin@example.com
