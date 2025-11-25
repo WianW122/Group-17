@@ -91,8 +91,9 @@
         </div>
         <button type="submit" class="btn btn-orange w-100 mb-2">Register</button>
         <p class="mt-2 text-center small">
-          Already have an account? <a href="login.html">Login here</a>
+          Already have an account? <a href="{{ url_for('login_page') }}">Login here</a>
         </p>
+
       </form>
     </div>
   </div>
@@ -128,8 +129,8 @@
       localStorage.setItem("user", JSON.stringify({user_id: result.user_id, name, email, role}));
 
       setTimeout(() => {
-          window.location.href = "login.html";
-      }, 1500); 
+        window.location.href = "/login";
+    }, 1500);
     });
   </script>
 </body>
