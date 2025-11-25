@@ -69,8 +69,8 @@ The platform enables the distribution of donated sports equipment to underprivil
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/<your-username>/play-it-forward.git
-cd play-it-forward
+git clone https://github.com/WianW122/Group-17
+cd Group-17
 ```
 ### 2. Create a Virtual Environment and Install Dependencies
 ```bash
